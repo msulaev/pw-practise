@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import exp from 'constants';
 
 test.beforeEach(async ({page}) => {
     await page.goto('http://localhost:4200/');
@@ -41,7 +42,46 @@ test.describe('checkboxes', () => {
     })
 
     test('Check all checkboxes', async ({page}) => {
-        await page.getByRole('checkbox', {name: 'Hide on click'}).click({force: true});
-
+        await page.getByRole('checkbox', {name: 'Hide on click'}).uncheck({force: true});
+        await page.getByRole('checkbox', {name: 'Prevent arising of duplicate toast'}).check({force: true});
+        const checkboxes = page.getByRole('checkbox');
+        for(const box of await checkboxes.all()) {
+            await box.check({force: true});
+            expect(await box.isChecked()).toBeTruthy();
+        }
+        for(const box of await checkboxes.all()) {
+            await box.uncheck({force: true});
+            expect(await box.isChecked()).not.toBeTruthy();
+        }
     })
+})
+
+test('CHange theme', async ({page}) => {
+        const ddMenu = page.locator('ngx-header nb-select');
+        await ddMenu.click();
+
+        page.getByRole('list'); // when the list is visible and has UL tag
+        page.getByRole('listitem'); // when the list is visible and has LI tag
+
+       // const optionList = page.getByRole('list').locator('nb-option');
+        const optionListAlternative = page.locator('nb-option-list nb-option');
+
+        await expect(optionListAlternative).toHaveText(["Light", "Dark", "Cosmic", "Corporate"]);
+
+        await optionListAlternative.filter({hasText: "Dark"}).click();
+
+        await expect(page.locator('nb-layout-header')).toHaveCSS('background-color', 'rgb(34, 43, 69)');
+
+        const colors = {
+            "Light": 'rgb(255, 255, 255)',
+            "Dark": 'rgb(34, 43, 69)',
+            "Cosmic": 'rgb(50, 50, 89)',
+            "Corporate": 'rgb(255, 255, 255)'
+        }
+
+        for(const color in colors) {
+            await ddMenu.click();
+            await optionListAlternative.filter({hasText: color}).click();
+            await expect(page.locator('nb-layout-header')).toHaveCSS('background-color', colors[color]);
+        }
 })
