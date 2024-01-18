@@ -90,3 +90,13 @@ test("Assertions", async ({ page }) => {
     await expect(page.locator('nb-card').filter({hasText: 'Using the Grid'})).toHaveText("Using the Grid", {ignoreCase: true});
     await expect(page.locator('nb-card').filter({hasText: 'Using the Grid'})).toHaveText("Using the Grid", {timeout: 5000});
 })
+
+test("Autowating for elements", async ({ page }) => {
+    //https://playwright.dev/docs/actionability
+    await page.goto("http://uitestingplayground.com/ajax");
+    await page.locator('#ajaxButton').click();
+    const successBtn = page.locator('bg-success');
+
+    await successBtn.waitFor({state: 'attached'});
+    expect(await successBtn.textContent()).toContain("Data loaded with AJAX get request.");
+})
