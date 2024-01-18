@@ -56,7 +56,7 @@ test.describe('checkboxes', () => {
     })
 })
 
-test('CHange theme', async ({page}) => {
+test('Change theme', async ({page}) => {
         const ddMenu = page.locator('ngx-header nb-select');
         await ddMenu.click();
 
@@ -84,4 +84,14 @@ test('CHange theme', async ({page}) => {
             await optionListAlternative.filter({hasText: color}).click();
             await expect(page.locator('nb-layout-header')).toHaveCSS('background-color', colors[color]);
         }
+})
+
+test('Tooltip', async ({page}) => {
+    await page.getByText('Modal & Overlays').click();
+    await page.getByText('Tooltip').click();
+
+    const tooltipCard = page.locator('nb-card',{hasText: 'Tooltip Placements'});
+    await tooltipCard.getByRole('button', {name: 'Top'}).hover();
+    const tooltip = await page.locator('nb-tooltip').textContent();
+    expect(tooltip).toEqual('This is a tooltip');
 })
