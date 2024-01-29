@@ -95,3 +95,21 @@ test('Tooltip', async ({page}) => {
     const tooltip = await page.locator('nb-tooltip').textContent();
     expect(tooltip).toEqual('This is a tooltip');
 })
+
+test('Tables', async ({page}) => {
+    await page.getByText('Tables & Data').click();
+    await page.getByText('Smart Table').click();
+
+    const targetRow = page.getByRole('row', {name: 'twitter@outlook.com'});
+    await targetRow.locator(".nb-edit").click();
+    await page.locator('input-editor').getByPlaceholder('Age').fill('25');
+    await page.locator('.nb-checkmark').click();
+
+    await page.locator('.ng2-smart-pagination-nav').getByText('2').click();
+    const targetRowById = page.getByRole('row', {name: '11'}).filter({has: page.locator('td').nth(1).getByText('11')});
+    await targetRowById.locator('.nb-edit').click();
+    await page.locator('input-editor').getByPlaceholder('Age').fill('25');
+    await page.locator('.nb-checkmark').click();
+    await expect(targetRowById.locator('td').nth(6)).toHaveText('25');
+
+})
