@@ -112,4 +112,25 @@ test('Tables', async ({page}) => {
     await page.locator('.nb-checkmark').click();
     await expect(targetRowById.locator('td').nth(6)).toHaveText('25');
 
+
+    const ages = ["20","30","40", "200"];
+
+    for(const age of ages) {   
+        await page.locator('input-filter').getByPlaceholder('Age').fill(age);
+        await page.waitForTimeout(500);
+        const ageRows = page.locator('tbody tr');
+        for(let cell of await ageRows.all()) {
+            const text = await cell.locator('td').last().textContent();
+            if(age === "200") {
+                expect(text).toEqual(" No data found ");
+            } else {
+            expect(text).toEqual(age);
+            }
+        }
+    }
+
+    ages.forEach( async age => {
+        await page.locator('input-filter').getByPlaceholder('Age').fill(age);
+    })
+
 })
