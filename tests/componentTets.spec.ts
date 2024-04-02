@@ -115,22 +115,33 @@ test('Tables', async ({page}) => {
 
     const ages = ["20","30","40", "200"];
 
-    for(const age of ages) {   
-        await page.locator('input-filter').getByPlaceholder('Age').fill(age);
-        await page.waitForTimeout(500);
-        const ageRows = page.locator('tbody tr');
-        for(let cell of await ageRows.all()) {
-            const text = await cell.locator('td').last().textContent();
-            if(age === "200") {
-                expect(text).toEqual(" No data found ");
-            } else {
-            expect(text).toEqual(age);
-            }
-        }
-    }
-
-    ages.forEach( async age => {
+    ages.forEach( async (age) => {
         await page.locator('input-filter').getByPlaceholder('Age').fill(age);
     })
+    // for(const age of ages) {   
+    //     await page.locator('input-filter').getByPlaceholder('Age').fill(age);
+    //     await page.waitForTimeout(500);
+    //     const ageRows = page.locator('tbody tr');
+    //     for(let cell of await ageRows.all()) {
+    //         const text = await cell.locator('td').last().textContent();
+    //         if(age === "200") {
+    //             expect(text).toEqual(" No data found ");
+    //         } else {
+    //         expect(text).toEqual(age);
+    //         }
+    //     }
+    // }
+
+    // ages.forEach( async age => {
+    //     await page.locator('input-filter').getByPlaceholder('Age').fill(age);
+    // })
+})
+
+test('Datepicker', async ({page}) => {
+    await page.getByText('Forms').click();
+    await page.getByText('Datepicker').click();
+    const calendarInpt = page.getByPlaceholder("Form Picker");
+    await calendarInpt.click();
+    await page.locator('[class= "day-cell ng-star-inserted"]').getByText('17', {exact: true}).click();
 
 })

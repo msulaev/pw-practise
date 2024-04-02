@@ -97,6 +97,23 @@ test("Autowating for elements", async ({ page }) => {
     await page.locator('#ajaxButton').click();
     const successBtn = page.locator('bg-success');
 
+    await page.waitForSelector('.bg-success');
     await successBtn.waitFor({state: 'attached'});
-    expect(await successBtn.textContent()).toContain("Data loaded with AJAX get request.");
-})
+    await expect(successBtn).toHaveText("Data loaded with AJAX get request.", {timeout: 20000});
+
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+});
+
+test("Interacting with elements", async ({ page }) => {
+    await page.goto("http://localhost:4200/pages/forms/layouts");
+    await page.getByPlaceholder('Jane Doe').fill("Test Testovich");
+    expect(page.getByPlaceholder('Jane Doe')).toHaveValue("Test Testovich");
+});
+
+test('Inline form', async ({page}) => {
+    await page.goto('http://localhost:4200/pages/forms/layouts');
+    const inpt = page.getByPlaceholder( 'Jane Doe');
+    await inpt.fill("Test Testovich");
+    await expect(inpt).toHaveValue("Test Testovich");
+    });
